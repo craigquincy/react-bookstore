@@ -1,26 +1,27 @@
 import React from 'react'
-import booksApi from '../api/booksApi'
 import SearchBar from './SearchBar'
-import BookList from './BookList'
+import BookListContainer from '../containers/BookListContainer'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+
 import Cart from './Cart'
+import { getBooks } from '../actions'
 
 class App extends React.Component {
 
-        state = { books: [], cart: [], allBooks: [] }
-
+    state = { books: [], cart: [], allBooks: [] }
 
     async componentDidMount() {
-       const response =  await booksApi.get('/books')
-
-       this.setState({ books: response.data, allBooks: response.data })
+      // initial book load
+      this.props.getBooks()
     }
 
-    onCartAdd = (item) => {
-        this.setState((prevState) => ({ 
-            ...prevState,
-            cart: prevState.cart.concat(item)
-        }))
-    }
+    // onCartAdd = (item) => {
+    //     this.setState((prevState) => ({
+    //         ...prevState,
+    //         cart: prevState.cart.concat(item)
+    //     }))
+    // }
 
     onSearchSubmit = (term) => {
         if(term === '') {
@@ -29,7 +30,7 @@ class App extends React.Component {
                 books: this.state.allBooks
             }))
         }
-        
+
         this.setState((prevState) => ({
             ...prevState,
             books: prevState.books.filter(book => {
@@ -45,7 +46,7 @@ class App extends React.Component {
                 <div className="ui two column grid" >
                     <div className="row">
                         <div className="column twelve wide">
-                            <BookList books={this.state.books} onAddClick={this.onCartAdd} />
+                            <BookListContainer books={this.state.books} onAddClick={this.onCartAdd} />
                         </div>
                         <div className="column four wide">
                             <Cart items={this.state.cart} />
@@ -57,4 +58,6 @@ class App extends React.Component {
     }
 }
 
-export default App
+const mapDispatchToProps = dispatch => bindActionCreators({ getBooks }, dispatch)
+
+export default connect(null, mapDispatchToProps)(App);

@@ -2,10 +2,10 @@ import React from 'react'
 import BookCard from './BookCard'
 import './BookList.css'
 
-const BookList = (props) => {
-    const listOfBooks = props.books.map((book) => {
+const BookList = ({books}) => {
+    const listOfBooks = books.map((book) => {
         return (
-        <BookCard key={book.id} book={book} onAddClick={props.onAddClick} />
+        <BookCard key={book.id} book={book} />
         )
     })
 
